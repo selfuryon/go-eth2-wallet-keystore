@@ -42,6 +42,7 @@ func TestUnmarshalAccount(t *testing.T) {
 		version    uint
 		walletType string
 		publicKey  []byte
+		path string
 	}{
 		{
 			name: "Nil",
@@ -64,11 +65,21 @@ func TestUnmarshalAccount(t *testing.T) {
 		},
 		{
 			name:       "Good",
-			input:      []byte(`{"crypto":{"checksum":{"function":"sha256","message":"834042b7466d411229671f2bab77a3ce92cf899fb0a187c6f1b33833e94c6311","params":{}},"cipher":{"function":"aes-128-ctr","message":"3f721459224dd5cfc0a350a6ae74160daa775fe1b25a301f572ef817beb9c9c0","params":{"iv":"cfb0d03016d09ba21106151eb9819f56"}},"kdf":{"function":"pbkdf2","message":"","params":{"c":262144,"dklen":32,"prf":"hmac-sha256","salt":"ec4d0397897713740f27a79911a03feb11d1c70346f90867cfc0e64aee4983e7"}}},"description":"0640","pubkey":"b991005d3c71ed6deb6a44e99980afcc81d660cbdb29695acd2f519a364a80f03de1fa42eac312704f8c25ec5657b958","uuid":"a7bb9f4d-3877-4b52-af67-97aa943073a5","version":4,"path":""}`),
+			input:      []byte(`{"crypto":{"checksum":{"function":"sha256","message":"834042b7466d411229671f2bab77a3ce92cf899fb0a187c6f1b33833e94c6311","params":{}},"cipher":{"function":"aes-128-ctr","message":"3f721459224dd5cfc0a350a6ae74160daa775fe1b25a301f572ef817beb9c9c0","params":{"iv":"cfb0d03016d09ba21106151eb9819f56"}},"kdf":{"function":"pbkdf2","message":"","params":{"c":262144,"dklen":32,"prf":"hmac-sha256","salt":"ec4d0397897713740f27a79911a03feb11d1c70346f90867cfc0e64aee4983e7"}}},"description":"0640","pubkey":"b991005d3c71ed6deb6a44e99980afcc81d660cbdb29695acd2f519a364a80f03de1fa42eac312704f8c25ec5657b958","uuid":"a7bb9f4d-3877-4b52-af67-97aa943073a5","version":4,"path":"wallet/account"}`),
 			walletType: "keystore",
 			id:         uuid.MustParse("a7bb9f4d-3877-4b52-af67-97aa943073a5"),
 			publicKey:  []byte{0xb9, 0x91, 0x00, 0x5d, 0x3c, 0x71, 0xed, 0x6d, 0xeb, 0x6a, 0x44, 0xe9, 0x99, 0x80, 0xaf, 0xcc, 0x81, 0xd6, 0x60, 0xcb, 0xdb, 0x29, 0x69, 0x5a, 0xcd, 0x2f, 0x51, 0x9a, 0x36, 0x4a, 0x80, 0xf0, 0x3d, 0xe1, 0xfa, 0x42, 0xea, 0xc3, 0x12, 0x70, 0x4f, 0x8c, 0x25, 0xec, 0x56, 0x57, 0xb9, 0x58},
 			version:    4,
+			path: "wallet/account",
+		},
+		{
+			name:       "GoodWithoutPath",
+			input:      []byte(`{"crypto":{"checksum":{"function":"sha256","message":"834042b7466d411229671f2bab77a3ce92cf899fb0a187c6f1b33833e94c6311","params":{}},"cipher":{"function":"aes-128-ctr","message":"3f721459224dd5cfc0a350a6ae74160daa775fe1b25a301f572ef817beb9c9c0","params":{"iv":"cfb0d03016d09ba21106151eb9819f56"}},"kdf":{"function":"pbkdf2","message":"","params":{"c":262144,"dklen":32,"prf":"hmac-sha256","salt":"ec4d0397897713740f27a79911a03feb11d1c70346f90867cfc0e64aee4983e7"}}},"description":"0640","pubkey":"b991005d3c71ed6deb6a44e99980afcc81d660cbdb29695acd2f519a364a80f03de1fa42eac312704f8c25ec5657b958","uuid":"a7bb9f4d-3877-4b52-af67-97aa943073a5","version":4}`),
+			walletType: "keystore",
+			id:         uuid.MustParse("a7bb9f4d-3877-4b52-af67-97aa943073a5"),
+			publicKey:  []byte{0xb9, 0x91, 0x00, 0x5d, 0x3c, 0x71, 0xed, 0x6d, 0xeb, 0x6a, 0x44, 0xe9, 0x99, 0x80, 0xaf, 0xcc, 0x81, 0xd6, 0x60, 0xcb, 0xdb, 0x29, 0x69, 0x5a, 0xcd, 0x2f, 0x51, 0x9a, 0x36, 0x4a, 0x80, 0xf0, 0x3d, 0xe1, 0xfa, 0x42, 0xea, 0xc3, 0x12, 0x70, 0x4f, 0x8c, 0x25, 0xec, 0x56, 0x57, 0xb9, 0x58},
+			version:    4,
+			path: "",
 		},
 	}
 
@@ -85,6 +96,7 @@ func TestUnmarshalAccount(t *testing.T) {
 				assert.Equal(t, test.publicKey, output.PublicKey().Marshal())
 				assert.Equal(t, test.version, output.version)
 				assert.Equal(t, test.walletType, output.wallet.Type())
+				assert.Equal(t, test.path, output.Path())
 			}
 		})
 	}

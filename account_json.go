@@ -107,7 +107,7 @@ func (a *account) UnmarshalJSON(data []byte) error {
 		return errors.New("unsupported keystore version")
 	}
 
-	// Handle path field, required.
+	// Handle path field, optional.
 	if val, exists := v["path"]; exists {
 		path, ok := val.(string)
 		if !ok {
@@ -115,7 +115,7 @@ func (a *account) UnmarshalJSON(data []byte) error {
 		}
 		a.path = path
 	} else {
-		return errors.New("account path missing")
+		a.path = ""
 	}
 
 	// Keystore does not support different encryptors; use default.
